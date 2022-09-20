@@ -22,12 +22,12 @@ Use the same cookies and headers for all of your http requests, and you'll be go
 Use these steps to duplicate that:
 
 - Go to the developer tools tab on your browser.
-- visit the website, then log in
+- visit kodekloud, then log in to your dashboard
 - After logging in, select the network tab, then reload the page.
 - You should now see a list of requests, with the top request being the actual site. We'll concentrate on that one because it contains the data with the identity we can use to scrape it with Python and BeautifulSoup.
-- When you select "Copy" from the context menu of the site request (the top one), choose "Copy as cURL"
+- When you select "Copy" from the dashboard menu of the site request (the top one), choose "Copy as cURL"
 Like this:
-![image](https://user-images.githubusercontent.com/55334829/191348887-cecbb829-8fc5-4d8c-8976-afb5e028b323.png)
+//user-images.githubusercontent.com/55334829/191348887-cecbb829-8fc5-4d8c-8976-afb5e028b323.png)
 
 - Then visit this website to transform cURL requests into python ones: https://curl.trillworks.com/
 - Copy the headers object(dict) and cookies object(dict) generated then replace  replace empty (cookies{} and headers{}) in the cookies_house.py file.
