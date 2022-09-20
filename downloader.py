@@ -105,12 +105,30 @@ def KodekDownloader(id, embUrl, filname, maindirtry):
         filename=filname,
     )
 if __name__ == "__main__":
-    savedirtry = "/Users/Umarvee/Downloads/Git_KKL/"
-    link = "https://kodekloud.com/courses/git-for-beginners/"
-    # link = "https://kodekloud.com/courses/devops-pre-requisite-course/"
+    print(
+        """ 
+        ================================================================
+                Hi Welcome to the KODEKLOUD Downloader...
+        ================================================================
+        For this system to work you must have a kodekloud account and store your login session as cookies in the cookie house file.
+
+        Please follow the guide on github carefully.
+                          Enjoy
+        """
+        )
+
+    if len(cookies) ==0:
+        import sys
+
+        print("Please populate the cookie file to continue \nExiting....")
+        sys.exit()
+
+
+    savedirtry = input("Input your local dirrectory to store the file: ")
+    link = input("Input the course url to download: e.g https://kodekloud.com/courses/devops-pre-requisite-course/\n ")
+    
     allVideoCateg = get_categ(get_lessons(link))
 
-    # print(allVideoCateg)
     for cntnt in ids_by_cooky_(link):
         try:
             KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],savedirtry+allVideoCateg[cntnt["name"]])
