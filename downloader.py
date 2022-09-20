@@ -2,8 +2,8 @@ import bs4
 from bs4 import BeautifulSoup
 import requests
 from vimeo_downloader import Vimeo
-import cookie_house_main
-from cookie_house_main import cookies,headers
+import cookie_house
+from cookie_house import cookies,headers
 import os
 
 
