@@ -132,17 +132,23 @@ if __name__ == "__main__":
         if not os.path.exists(savedirtry+link.split("/")[-1]):
             os.makedirs(savedirtry+link.split("/")[-1])
             newdirtry = savedirtry+link.split("/")[-1]
+        else:
+            newdirtry = savedirtry+link.split("/")[-1]
+
     else:
         if not os.path.exists(savedirtry+link.split("/")[-2]):
             os.makedirs(savedirtry+link.split("/")[-2])
+            newdirtry = savedirtry+link.split("/")[-2]
+        else:
             newdirtry = savedirtry+link.split("/")[-2]
     
 
     for cntnt in ids_by_cooky_(link):
         try:
-            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+allVideoCateg[cntnt["name"]])
+            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+"/"+allVideoCateg[cntnt["name"]])
         except KeyError as e:
             print(f"unable to determine directory for: {cntnt['name']}")
-            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+"random")
+            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+"/"+"random")
             
 
+# /Users/Umarvee/Downloads/

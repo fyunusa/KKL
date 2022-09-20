@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 cookie_house_main.py
+downloader_local.py
 
 # C extensions
 *.so
