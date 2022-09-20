@@ -1,0 +1,9 @@
+
+# Run the following to download dependencies
+"pip install beautifulsoup4"
+"pip install vimeo-downloader"
+
+# OR
+
+"pip3 install beautifulsoup4"
+"pip3 install vimeo-downloader"
