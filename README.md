@@ -27,7 +27,7 @@ Use these steps to duplicate that:
 - You should now see a list of requests, with the top request being the actual site. We'll concentrate on that one because it contains the data with the identity we can use to scrape it with Python and BeautifulSoup.
 - When you select "Copy" from the dashboard menu of the site request (the top one), choose "Copy as cURL"
 Like this:
-user-images.githubusercontent.com/55334829/191348887-cecbb829-8fc5-4d8c-8976-afb5e028b323.png)
+
 <img width="1280" alt="Screenshot 2022-09-20 at 9 21 12 PM" src="https://user-images.githubusercontent.com/55334829/191357531-947b1bfa-d9fe-4a06-9cb3-77f0e4756463.png">
 - Then visit this website to transform cURL requests into python ones: https://curl.trillworks.com/
 - Copy the headers object(dict) and cookies object(dict) generated then replace  replace empty (cookies{} and headers{}) in the cookies_house.py file.
