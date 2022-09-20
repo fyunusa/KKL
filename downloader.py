@@ -2,8 +2,9 @@ import bs4
 from bs4 import BeautifulSoup
 import requests
 from vimeo_downloader import Vimeo
-import cookie_house
-from cookie_house import cookies,headers
+import cookie_house_main
+from cookie_house_main import cookies,headers
+import os
 
 
 
@@ -87,8 +88,6 @@ def ids_by_cooky_(url):
     
 def KodekDownloader(id, embUrl, filname, maindirtry):
 
-    import os
-
     if not os.path.exists(maindirtry):
         os.makedirs(maindirtry)
 
@@ -129,6 +128,14 @@ if __name__ == "__main__":
     
     allVideoCateg = get_categ(get_lessons(link))
 
+    if link.split("/")[-1] != "":
+        if not os.path.exists(savedirtry+link.split("/")[-1]):
+            os.makedirs(savedirtry+link.split("/")[-1])
+    else:
+        if not os.path.exists(savedirtry+link.split("/")[-2]):
+            os.makedirs(savedirtry+link.split("/")[-2])
+    
+
     for cntnt in ids_by_cooky_(link):
         try:
             KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],savedirtry+allVideoCateg[cntnt["name"]])
@@ -136,5 +143,4 @@ if __name__ == "__main__":
             print(f"unable to determine directory for: {cntnt['name']}")
             KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],savedirtry+"random")
             
-
 
