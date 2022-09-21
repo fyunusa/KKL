@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 cookie_house_main.py
 downloader_local.py
+lab.py
 
 # C extensions
 *.so

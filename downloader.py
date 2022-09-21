@@ -92,17 +92,22 @@ def KodekDownloader(id, embUrl, filname, maindirtry):
         os.makedirs(maindirtry)
 
     
-    v = Vimeo(
-        f"https://player.vimeo.com/video/{id}",
-        embedded_on=f"{embUrl}",
-    )
-    s = v.streams
-    best_stream = s[-1]  # Select the best stream
+    if os.path.isfile(maindirtry+'/'+filname+'.mp4'):
+        print(f"Suspected existing records for {filname}, skipping record")
+    else:
+        v = Vimeo(
+            f"https://player.vimeo.com/video/{id}",
+            embedded_on=f"{embUrl}",
+        )
+        s = v.streams
+        best_stream = s[-1]  # Select the best stream
 
-    best_stream.download(
-        download_directory=maindirtry,
-        filename=filname,
-    )
+        best_stream.download(
+            download_directory=maindirtry,
+            filename=filname,
+        )
+
+        
 if __name__ == "__main__":
     print(
         """ 
