@@ -14,9 +14,11 @@ def get_lessons(url):  # from main course page
 
     res = BeautifulSoup(response.content, "html.parser")
     tags = res.findAll("a", {"class": "ld-item-name ld-primary-color-hover"})
+    # tags = res.findAll("div", {"class": "ld-item-list-item ld-item-lesson-item ld-lesson-item-12848 is_not_sample learndash-complete"})
     embUrls = [tag.get("href") for tag in tags]
 
     return embUrls
+    # print(embUrls)
 
 def get_categ(url):
 
@@ -47,17 +49,22 @@ def get_sub_lessons(url):
     topics = []
 
     # gets playId from emburl
-    response = requests.get(url)
+    # response = requests.get(url)
 
-    res = BeautifulSoup(response.content, "html.parser")
-    # tags2 = res.findAll("li", class_="lms-topic-item ")
-    # tags2 = res.findAll("a", {"class": "bb-lms-title-wrap"})
-    tags2 = res.findAll("a", class_="ld-table-list-item-preview")
-    for itm in tags2:
-        # print(itm2)
-        topics.append(itm.get("href"))
+    with requests.Session() as s:
+        for link in get_lessons(url):
+            needed_page= s.get(link,cookies=cookies,headers=headers)
+            soup = BeautifulSoup(needed_page.content, 'html.parser')
+        
+            tags2 = soup.find("li", class_="current")
+            for itm in tags2.find_all('a', class_="flex bb-title bb-lms-title-wrap"):
+                # lms-topic-item 
+                # topics.append(itm.get("href"))
+                topics.append(itm.get("href"))
     
     return topics
+    # print(topics)
+    # print(len(topics))
 
 
 def ids_by_cooky_(url):
@@ -67,7 +74,7 @@ def ids_by_cooky_(url):
     with requests.Session() as s:
         print("successfully loaded session now finding ids by cookies.....")
         print("Chill as this may take almost 40 secs to complete")
-        for link in get_sub_lessons(get_lessons(url)[-1]):
+        for link in get_sub_lessons(url):
             needed_page= s.get(link,cookies=cookies,headers=headers)
             soup = BeautifulSoup(needed_page.content, 'html.parser')
             tags = soup.findAll("iframe")
@@ -91,7 +98,6 @@ def KodekDownloader(id, embUrl, filname, maindirtry):
     if not os.path.exists(maindirtry):
         os.makedirs(maindirtry)
 
-    
     if os.path.isfile(maindirtry+'/'+filname+'.mp4'):
         print(f"Suspected existing records for {filname}, skipping record")
     else:
@@ -107,8 +113,8 @@ def KodekDownloader(id, embUrl, filname, maindirtry):
             filename=filname,
         )
 
-        
 if __name__ == "__main__":
+
     print(
         """ 
         ================================================================
@@ -147,7 +153,7 @@ if __name__ == "__main__":
         else:
             newdirtry = savedirtry+link.split("/")[-2]
     
-
+    
     for cntnt in ids_by_cooky_(link):
         try:
             KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+"/"+allVideoCateg[cntnt["name"]])
@@ -155,5 +161,3 @@ if __name__ == "__main__":
             print(f"unable to determine directory for: {cntnt['name']}")
             KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+"/"+"random")
             
-
-# /Users/Umarvee/Downloads/
