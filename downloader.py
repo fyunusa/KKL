@@ -20,37 +20,44 @@ def get_lessons(url):  # from main course page
     return embUrls
     # print(embUrls)
 
-def get_categ(url):
-
+def get_categ(lessons):
+    import re
     print("Trying to load categories please hold as this may take up to 20secs.....")
     embUrls2 = {}
-    # lab_test = []
+
     with requests.Session() as s:
-        for link in url:
+        for link in lessons:
             needed_page= s.get(link,cookies=cookies,headers=headers)
             soup = BeautifulSoup(needed_page.content, 'html.parser')
-
             
-            # print(tag.get("title") + link)
             current_tags = soup.find("li", {"class": "current"})
+            # print(current_tags)
             for ptag in current_tags.find_all('a', class_="bb-lesson-head"):
-                lesson_head = ptag.get("title")
-                # lab_test.append(ptag.get("title"))
+                cleane = "".join(ptag.strings)
+                cleane = re.sub(r'(\n\s*)+\n+', '', cleane)
+                indx = 0
+                for itm in cleane.split(" "):
+                    if itm == "":
+                        new_list = cleane.split(" ")[0:indx]
+                        break
+                    else:
+                        indx = indx+1
+            new_title = ' '.join(map(str,new_list))
 
             for ptag in current_tags.find_all('li', class_="lms-topic-item"): 
                 newtag = ptag.find("a")
                 
-                embUrls2[newtag.get("href").split("/")[-2]] = lesson_head
-    # print(lab_test)
-    print("successfully loaded all categories")       
+                embUrls2[newtag.get("href").split("/")[-2]] = new_title
+                # embUrls2[newtag.get("href")] = new_title
+
+    # print("successfully loaded all categories")       
+    
+    # print(embUrls2)
     return embUrls2
 
 def get_sub_lessons(url):
     topics = []
-
-    # gets playId from emburl
-    # response = requests.get(url)
-
+    # print("iyaf start")
     with requests.Session() as s:
         for link in get_lessons(url):
             needed_page= s.get(link,cookies=cookies,headers=headers)
@@ -58,17 +65,11 @@ def get_sub_lessons(url):
         
             tags2 = soup.find("li", class_="current")
             for itm in tags2.find_all('a', class_="flex bb-title bb-lms-title-wrap"):
-                # lms-topic-item 
-                # topics.append(itm.get("href"))
                 topics.append(itm.get("href"))
     
     return topics
-    # print(topics)
-    # print(len(topics))
-
 
 def ids_by_cooky_(url):
-    # ids = []
     full_data = []
 
     with requests.Session() as s:
@@ -98,7 +99,7 @@ def KodekDownloader(id, embUrl, filname, maindirtry):
     if not os.path.exists(maindirtry):
         os.makedirs(maindirtry)
 
-    if os.path.isfile(maindirtry+'/'+filname+'.mp4'):
+    if os.path.isfile(os.path.join(maindirtry,filname)+'.mp4'):
         print(f"Suspected existing records for {filname}, skipping record")
     else:
         v = Vimeo(
@@ -127,7 +128,7 @@ if __name__ == "__main__":
         """
         )
 
-    if len(cookies) ==0:
+    if len(cookies) == 0:
         import sys
 
         print("Please populate the cookie file to continue \nExiting....")
@@ -136,28 +137,27 @@ if __name__ == "__main__":
 
     savedirtry = input("Input your local dirrectory to store the file: ")
     link = input("Input the course url to download: e.g https://kodekloud.com/courses/devops-pre-requisite-course/\n ")
-    
-    allVideoCateg = get_categ(get_lessons(link))
 
+    allVideoCateg = get_categ(get_lessons(link))
+   
     if link.split("/")[-1] != "":
-        if not os.path.exists(savedirtry+link.split("/")[-1]):
-            os.makedirs(savedirtry+link.split("/")[-1])
-            newdirtry = savedirtry+link.split("/")[-1]
+        if not os.path.exists(os.path.join(savedirtry, link.split("/")[-1])):
+            os.makedirs(os.path.join(savedirtry, link.split("/")[-1]))
+            newdirtry = os.path.join(savedirtry, link.split("/")[-1])
         else:
-            newdirtry = savedirtry+link.split("/")[-1]
+            newdirtry = os.path.join(savedirtry, link.split("/")[-1])
 
     else:
-        if not os.path.exists(savedirtry+link.split("/")[-2]):
-            os.makedirs(savedirtry+link.split("/")[-2])
-            newdirtry = savedirtry+link.split("/")[-2]
+        if not os.path.exists(os.path.join(savedirtry, link.split("/")[-2])):
+            os.makedirs(os.path.join(savedirtry, link.split("/")[-2]))
+            newdirtry = os.path.join(savedirtry, link.split("/")[-2])
         else:
-            newdirtry = savedirtry+link.split("/")[-2]
+            newdirtry = os.path.join(savedirtry, link.split("/")[-2])
     
     
     for cntnt in ids_by_cooky_(link):
         try:
-            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+"/"+allVideoCateg[cntnt["name"]])
+            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],os.path.join(newdirtry,allVideoCateg[cntnt["name"]]))
         except KeyError as e:
             print(f"unable to determine directory for: {cntnt['name']}")
-            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],newdirtry+"/"+"random")
-            
+            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],os.path.join(newdirtry,"random"))
