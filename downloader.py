@@ -74,7 +74,7 @@ def ids_by_cooky_(url):
 
     with requests.Session() as s:
         print("successfully loaded session now finding ids by cookies.....")
-        print("Chill as this may take almost 40 secs to complete")
+        print("Chill as this may take almost 1 min to complete, depending on the depth of the course.")
         for link in get_sub_lessons(url):
             needed_page= s.get(link,cookies=cookies,headers=headers)
             soup = BeautifulSoup(needed_page.content, 'html.parser')
@@ -95,24 +95,31 @@ def ids_by_cooky_(url):
     return full_data
     
 def KodekDownloader(id, embUrl, filname, maindirtry):
+    # print("Downloader is being called on {0}".format(filname))
 
     if not os.path.exists(maindirtry):
+        # print(maindirtry)
         os.makedirs(maindirtry)
 
     if os.path.isfile(os.path.join(maindirtry,filname)+'.mp4'):
         print(f"Suspected existing records for {filname}, skipping record")
-    else:
-        v = Vimeo(
-            f"https://player.vimeo.com/video/{id}",
-            embedded_on=f"{embUrl}",
-        )
-        s = v.streams
-        best_stream = s[-1]  # Select the best stream
 
-        best_stream.download(
-            download_directory=maindirtry,
-            filename=filname,
-        )
+    else:
+        try:
+            v = Vimeo(
+                f"https://player.vimeo.com/video/{id}",
+                embedded_on=f"{embUrl}",
+            )
+            s = v.streams
+            best_stream = s[-1]  # Select the best stream
+
+            best_stream.download(
+                download_directory=maindirtry,
+                filename=filname,
+            )
+        except Exception as e:
+            print("unable to download {0} with id: {1} from url {2}".format(filname,id,embUrl))
+            pass
 
 if __name__ == "__main__":
 
