@@ -4,7 +4,7 @@ import requests
 from vimeo_downloader import Vimeo
 import cookie_house
 from cookie_house import cookies,headers
-import os
+import os , re
 
 
 
@@ -164,7 +164,9 @@ if __name__ == "__main__":
     
     for cntnt in ids_by_cooky_(link):
         try:
-            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],os.path.join(newdirtry,allVideoCateg[cntnt["name"]]))
+            foldername = allVideoCateg[cntnt["name"]]
+            foldernamefinal = re.sub(r'[^\w]', '', foldername)
+            KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],os.path.join(newdirtry,foldernamefinal))
         except KeyError as e:
             print(f"unable to determine directory for: {cntnt['name']}")
             KodekDownloader(cntnt["id"],cntnt["emburl"],cntnt["name"],os.path.join(newdirtry,"random"))
